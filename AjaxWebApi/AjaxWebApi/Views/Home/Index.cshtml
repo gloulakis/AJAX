@@ -1,0 +1,53 @@
+﻿@model IEnumerable<ChessFiguresViewModel>
+
+@{
+    ViewData["Title"] = "Home Page";
+    int rowId = 0;
+}
+
+<div class="text-center">
+    <table>
+        <tr>
+            <th><button onclick="getOrder()" class="table-btn">Name</button></th>
+            <th><button class="table-btn">Power</button></th>
+            <th><button class="table-btn">Max range</button></th>
+            <th><button class="table-btn">Min range</button></th>
+            <th>Picture</th>
+        </tr>
+
+        @foreach (var figure in Model)
+        {
+            <tr id="@(rowId++)">
+                <td class="info-cell">@figure.Name</td>
+                <td class="info-cell">@figure.Power</td>
+                <td class="info-cell">@figure.MaxRange</td>
+                <td class="info-cell">@figure.MinRange</td>
+                <td class="info-cell"><img src="@figure.ImageUrl" /></td>
+            </tr>
+        }
+    </table>
+</div>
+
+<script>
+    const getOrder = () => {
+        fetch("api/ChessSorter/name")
+            .then(data => data.json())
+            .then((data) => {
+                console.log(data);
+                reorder(data);
+            });
+    };
+
+    const reorder = (data) => {
+        data.forEach(prop => {
+            let row = document.getElementById(prop.order);
+            let cells = row.children;
+            cells[0].innerHTML = prop.name;
+            cells[1].innerHTML = prop.power;
+            cells[2].innerHTML = prop.maxRange;
+            cells[3].innerHTML = prop.minRange;
+            cells[4].children[0].src = prop.imageUrl;
+        });
+        
+    };
+</script>
